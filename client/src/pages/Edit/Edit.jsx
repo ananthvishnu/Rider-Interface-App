@@ -1,190 +1,217 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Card from "react-bootstrap/Card"
-import Rider from "../../Assets/Rider.png"
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import Row from "react-bootstrap/Row"
-import Spiner from "../../components/Spinner/Spinner"
+import Row from 'react-bootstrap/Row';
 import Select from 'react-select';
+import Spiner from "../../components/Spinner/Spinner"
+import { singleUsergetfunc,editfunc } from '../../services/Apis';
+import { useNavigate, useParams } from 'react-router-dom';
+import { updateData } from '../../components/context/ContextProvider';
 import { ToastContainer, toast } from "react-toastify"
+import { BASE_URL } from '../../services/helper';
 import 'react-toastify/dist/ReactToastify.css';
-import './edit.css'
+import "./edit.css"
+
+
 
 const Edit = () => {
 
-  const [inputData, setInputData] = useState({
-    id: "",
-    name: "",
+  const [inputdata, setInputData] = useState({
+    fname: "",
+    lname: "",
     email: "",
-    position: "",
+    mobile: "",
     gender: "",
-    nric: "",
+    location: ""
   });
 
 
   const [status, setStatus] = useState("Active");
+  const [imgdata,setImgdata] = useState("");
   const [image, setImage] = useState("");
   const [preview, setPreview] = useState("");
 
-  const [showSpin, setShowSpin] = useState(true);
+  const {update,setUpdate} = useContext(updateData)
 
-  //Status Options
+ const navigate = useNavigate();
+
+  const [showspin, setShowSpin] = useState(true);
+
+  const {id} = useParams();
+
+  // status optios
   const options = [
     { value: 'Active', label: 'Active' },
     { value: 'InActive', label: 'InActive' },
   ];
 
-  //setInput Value
+  // setInput Value
   const setInputValue = (e) => {
     const { name, value } = e.target;
-    setInputData({ ...inputData, [name]: value })
-  };
+    setInputData({ ...inputdata, [name]: value })
+  }
 
-  //Status set
+  // status set
   const setStatusValue = (e) => {
     setStatus(e.value)
-  };
+  }
 
-  //profile set
+  // profile set
   const setProfile = (e) => {
     setImage(e.target.files[0])
-  };
+  }
+
+  
+
+  const userProfileGet = async()=>{
+    const response = await singleUsergetfunc(id);
+    
+    if(response.status === 200){
+      setInputData(response.data)
+      setStatus(response.data.status)
+      setImgdata(response.data.profile)
+    }else{
+      console.log("error");
+    }
+  }
+  
 
   //submit userdata
-  const submitUserData = (e) => {
+  const submitUserData = async(e) => {
     e.preventDefault();
 
-    const {
-      id,
-      name,
-      email,
-      position,
-      gender,
-      nric,
-    } = inputData
+    const { fname, lname, email, mobile, gender, location } = inputdata;
 
-    if (id === "") {
-      toast.error("Id is Required !");
-    } else if (name === "") {
-      toast.error("Name is Required !")
+    if (fname === "") {
+      toast.error("First name is Required !")
+    } else if (lname === "") {
+      toast.error("Last name is Required !")
     } else if (email === "") {
       toast.error("Email is Required !")
     } else if (!email.includes("@")) {
       toast.error("Enter Valid Email !")
-    } else if (position === "") {
-      toast.error("Position is Required !")
+    } else if (mobile === "") {
+      toast.error("Mobile is Required !")
+    } else if (mobile.length > 10) {
+      toast.error("Enter Valid Mobile!f")
     } else if (gender === "") {
       toast.error("Gender is Required !")
-    } else if (nric === "") {
-      toast.error("NRIC is Required !")
     } else if (status === "") {
-      toast.error("Status is required !")
-    } else if (image === "") {
-      toast.error("Profile is required !")
+      toast.error("Status is Required !")
+    } else if (location === "") {
+      toast.error("location is Required !")
     } else {
-      toast.success("Registration Succesfully done")
-    }
+      
+      const data = new FormData();
+      data.append("fname",fname)
+      data.append("lname",lname)
+      data.append("email",email)
+      data.append("mobile",mobile)
+      data.append("gender",gender)
+      data.append("status",status)
+      data.append("user_profile",image || imgdata)
+      data.append("location",location)
 
+      const config = {
+        "Content-Type":"multipart/form-data"
+      }
+
+      const response = await editfunc(id,data,config);
+      
+      if(response.status === 200){
+        setUpdate(response.data)
+        navigate("/")
+      }
+
+    }
   }
+
+  useEffect(()=>{
+    userProfileGet();
+  },[id])
 
   useEffect(() => {
     if (image) {
+      setImgdata("")
       setPreview(URL.createObjectURL(image))
     }
     setTimeout(() => {
       setShowSpin(false)
     }, 1200)
-  }, [image])
+  }, [image]);
 
 
 
   return (
     <>
-      {showSpin ? <Spiner /> : <div className="container">
-        <h2 className='text-center mt-1'>Update Rider Details</h2>
-        <Card className='shadow mt-3 p-3'>
-          <div className='profile_div text-center'>
-            <img src={preview ? preview : Rider} alt="User" />
-          </div>
-          <Form>
-            <Row>
-              <Form.Group className="mb-3 col-lg-6" controlId="formBasicEmail">
-                <Form.Label>Id</Form.Label>
-                <Form.Control type="text" name='id' value={inputData.id} onChange={setInputValue} placeholder="Rider ID" />
-              </Form.Group>
+      {
+        showspin ? <Spiner /> : <div className="container">
+          <h2 className='text-center mt-1'>Update Your Details</h2>
+          <Card className='shadow mt-3 p-3'>
+            <div className="profile_div text-center">
+              <img src={image ? preview : `${BASE_URL}/uploads/${imgdata}`} alt="img" />
+            </div>
 
-              <Form.Group className="mb-3 col-lg-6" controlId="formBasicEmail">
-                <Form.Label>Name</Form.Label>
-                <Form.Control type="text" name='name' value={inputData.name} onChange={setInputValue} placeholder="Rider Name" />
-              </Form.Group>
+            <Form>
+              <Row>
+                <Form.Group className="mb-3 col-lg-6" controlId="formBasicEmail">
+                  <Form.Label>First name</Form.Label>
+                  <Form.Control type="text" name='fname' value={inputdata.fname} onChange={setInputValue} placeholder='Enter FirstName' />
+                </Form.Group>
+                <Form.Group className="mb-3 col-lg-6" controlId="formBasicEmail">
+                  <Form.Label>Last Name</Form.Label>
+                  <Form.Control type="text" name='lname' value={inputdata.lname} onChange={setInputValue} placeholder='Enter LastName' />
+                </Form.Group>
+                <Form.Group className="mb-3 col-lg-6" controlId="formBasicEmail">
+                  <Form.Label>Email address</Form.Label>
+                  <Form.Control type="email" name='email' value={inputdata.email} onChange={setInputValue} placeholder='Enter Email' />
+                </Form.Group>
+                <Form.Group className="mb-3 col-lg-6" controlId="formBasicEmail">
+                  <Form.Label>Mobile</Form.Label>
+                  <Form.Control type="text" name='mobile' value={inputdata.mobile} onChange={setInputValue} placeholder='Enter Mobile' />
+                </Form.Group>
+                <Form.Group className="mb-3 col-lg-6" controlId="formBasicEmail">
+                  <Form.Label>Select Your Gender</Form.Label>
+                  <Form.Check
+                    type={"radio"}
+                    label={`Male`}
+                    name="gender"
+                    value={"Male"}
+                    checked={inputdata.gender == "Male" ? true:false}
+                    onChange={setInputValue}
+                  />
+                  <Form.Check
+                    type={"radio"}
+                    label={`Female`}
+                    name="gender"
+                    value={"Female"}
+                    checked={inputdata.gender == "Female" ? true:false}
+                    onChange={setInputValue}
+                  />
+                </Form.Group>
+                <Form.Group className="mb-3 col-lg-6" controlId="formBasicEmail">
+                  <Form.Label>Select Your Status</Form.Label>
+                  <Select options={options} defaultValue={status} onChange={setStatusValue} />
+                </Form.Group>
+                <Form.Group className="mb-3 col-lg-6" controlId="formBasicEmail">
+                  <Form.Label>Select Your Profile</Form.Label>
+                  <Form.Control type="file" name='user_profile' onChange={setProfile} placeholder='Select Your Profile' />
+                </Form.Group>
+                <Form.Group className="mb-3 col-lg-6" controlId="formBasicEmail">
+                  <Form.Label>Enter Your Location</Form.Label>
+                  <Form.Control type="text" name='location' value={inputdata.location} onChange={setInputValue} placeholder='Enter Your Location' />
+                </Form.Group>
+                <Button variant="primary" type="submit" onClick={submitUserData}>
+                  Submit
+                </Button>
+              </Row>
 
-              <Form.Group className="mb-3 col-lg-6" controlId="formBasicEmail">
-                <Form.Label>Email</Form.Label>
-                <Form.Control type="email" name='email' value={inputData.email} onChange={setInputValue} placeholder="Rider email" />
-              </Form.Group>
-
-              <Form.Group className="mb-3 col-lg-6" controlId="formBasicEmail">
-                <Form.Label>Position</Form.Label>
-                <Form.Control type="text" name='position' value={inputData.position} onChange={setInputValue} placeholder="Enter Position" />
-              </Form.Group>
-
-              <Form.Group className="mb-3 col-lg-6" controlId="formBasicEmail">
-                <Form.Label>Gender</Form.Label>
-                <Form.Check
-                  type={"radio"}
-                  label={`Male`}
-                  name="gender"
-                  value={"Male"}
-                  onChange={setInputValue}
-                />
-                <Form.Check
-                  type={"radio"}
-                  label={`Female`}
-                  name="gender"
-                  value={"Female"}
-                  onChange={setInputValue}
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3 col-lg-6" controlId="formBasicEmail">
-                <Form.Label>Status</Form.Label>
-                <Select
-                  options={options}
-                  onChange={setStatusValue}
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3 col-lg-6" controlId="formBasicEmail">
-                <Form.Label>NRIC</Form.Label>
-                <Form.Control type="text" name='nric' value={inputData.nric} onChange={setInputValue} placeholder="Enter NRIC" />
-              </Form.Group>
-
-              <Form.Group className="mb-3 col-lg-6" controlId="formBasicEmail">
-                <Form.Label>Select Your Profile</Form.Label>
-                <Form.Control type="file" name='user_profile' onChange={setProfile} placeholder="Select Your Profile" />
-              </Form.Group>
-
-
-              <Button variant="primary" type="submit" onClick={submitUserData}>
-                Submit
-              </Button>
-            </Row>
-          </Form>
-
-        </Card>
-        <ToastContainer
-          position="top-center"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-        />
-      </div>}
+            </Form>
+          </Card>
+          <ToastContainer position="top-center" />
+        </div>
+      }
 
     </>
   )
