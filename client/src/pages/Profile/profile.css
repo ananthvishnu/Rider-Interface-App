@@ -3,3 +3,14 @@
     border-radius: 50%;
     border: 2px solid #1111;
 }
+.email{
+    color: rgb(238,101,122);
+}
+
+.location{
+    color: blue;
+}
+
+.calendar{
+    color: rebeccapurple;
+}
