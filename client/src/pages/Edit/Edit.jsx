@@ -11,6 +11,7 @@ import { updateData } from '../../components/context/ContextProvider';
 import { ToastContainer, toast } from "react-toastify"
 import { BASE_URL } from '../../services/helper';
 import 'react-toastify/dist/ReactToastify.css';
+import Footer from '../../components/Footer/footer';
 import "./edit.css"
 
 
@@ -32,7 +33,7 @@ const Edit = () => {
   const [image, setImage] = useState("");
   const [preview, setPreview] = useState("");
 
-  const {update,setUpdate} = useContext(updateData)
+  const {setUpdate} = useContext(updateData)
 
  const navigate = useNavigate();
 
@@ -142,7 +143,7 @@ const Edit = () => {
     <>
       {
         showspin ? <Spiner /> : <div className="container">
-          <h2 className='text-center mt-1'>Update Your Details</h2>
+          <h2 className='text-center mt-1'style={{color:"white"}}>Update Rider Details</h2>
           <Card className='shadow mt-3 p-3'>
             <div className="profile_div text-center">
               <img src={image ? preview : `${BASE_URL}/uploads/${imgdata}`} alt="img" />
@@ -163,8 +164,8 @@ const Edit = () => {
                   <Form.Control type="email" name='email' value={inputdata.email} onChange={setInputValue} placeholder='Enter Email' />
                 </Form.Group>
                 <Form.Group className="mb-3 col-lg-6" controlId="formBasicEmail">
-                  <Form.Label>nric</Form.Label>
-                  <Form.Control type="text" name='nric' value={inputdata.nric} onChange={setInputValue} placeholder='Enter nric' />
+                  <Form.Label>NRIC</Form.Label>
+                  <Form.Control type="text" name='nric' value={inputdata.nric} onChange={setInputValue} placeholder='Enter NRIC' />
                 </Form.Group>
                 <Form.Group className="mb-3 col-lg-6" controlId="formBasicEmail">
                   <Form.Label>Select Your Status</Form.Label>
@@ -188,7 +189,7 @@ const Edit = () => {
           <ToastContainer position="top-center" />
         </div>
       }
-
+<Footer/>
     </>
   )
 }

@@ -47,7 +47,7 @@ const Profile = () => {
               </Row>
               <div className='text-center'>
                 <h3>{userprofile.fname + userprofile.lname}</h3>
-                <h4><i class="fa-solid fa-envelope email"></i>&nbsp;:- <span>{userprofile.email}</span> </h4>
+                <h4>Email&nbsp;:- <span>{userprofile.email}</span> </h4>
                 <h5><i class="fa-solid fa-mobile"></i>&nbsp;:- <span>{userprofile.nric}</span> </h5>
                 <h4><i class="fa-solid fa-location-pin location"></i>&nbsp;:- <span>{userprofile.position}</span> </h4>
                 <h4>Status&nbsp;:- <span>{userprofile.status}</span> </h4>

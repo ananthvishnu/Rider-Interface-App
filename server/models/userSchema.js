@@ -25,14 +25,7 @@ const usersSchema = new mongoose.Schema({
     nric: {
         type: String,
         required: true,
-        // unique: true,
-        // minlength: 10,
-        // maxlength: 10
     },
-    // gender: {
-    //     type: String,
-    //     required: true,
-    // },
     status: {
         type: String,
         required: true,
@@ -45,11 +38,11 @@ const usersSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    datecreated:Date,
-    dateUpdated:Date
+    datecreated: Date,
+    dateUpdated: Date
 });
 
 // model
-const users = new mongoose.model("users",usersSchema);
+const users = new mongoose.model("users", usersSchema);
 
 module.exports = users;

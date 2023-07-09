@@ -16,4 +16,4 @@ app.use(router);
 
 app.listen(PORT,()=>{
     console.log(`Server start at port no ${PORT}`)
-})
+});

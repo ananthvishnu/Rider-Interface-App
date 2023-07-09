@@ -11,6 +11,7 @@ import {useNavigate} from "react-router-dom"
 import 'react-toastify/dist/ReactToastify.css';
 import "./register.css"
 import { addData } from '../../components/context/ContextProvider';
+import Footer from '../../components/Footer/footer';
 
 const Register = () => {
 
@@ -129,7 +130,7 @@ const Register = () => {
     <>
       {
         showspin ? <Spiner /> : <div className="container">
-          <h2 className='text-center mt-1'>Register Your Details</h2>
+          <h2 className='text-center mt-1' style={{color:"white"}}>Register Rider Details</h2>
           <Card className='shadow mt-3 p-3'>
             <div className="profile_div text-center">
               <img src={preview ? preview : "/man.png"} alt="img" />
@@ -151,7 +152,7 @@ const Register = () => {
                 </Form.Group>
                 <Form.Group className="mb-3 col-lg-6" controlId="formBasicEmail">
                   <Form.Label>nric</Form.Label>
-                  <Form.Control type="text" name='nric' value={inputdata.nric} onChange={setInputValue} placeholder='Enter nric' />
+                  <Form.Control type="text" name='nric' value={inputdata.nric} onChange={setInputValue} placeholder='Enter NRIC' />
                 </Form.Group>
                 <Form.Group className="mb-3 col-lg-6" controlId="formBasicEmail">
                   <Form.Label>Select Your Status</Form.Label>
@@ -163,7 +164,7 @@ const Register = () => {
                 </Form.Group>
                 <Form.Group className="mb-3 col-lg-6" controlId="formBasicEmail">
                   <Form.Label>Enter Your position</Form.Label>
-                  <Form.Control type="text" name='position' value={inputdata.position} onChange={setInputValue} placeholder='Enter Your position' />
+                  <Form.Control type="text" name='position' value={inputdata.position} onChange={setInputValue} placeholder='Enter Your Position' />
                 </Form.Group>
                 <Button variant="primary" type="submit" onClick={submitUserData}>
                   Submit
@@ -175,7 +176,7 @@ const Register = () => {
           <ToastContainer position="top-center" />
         </div>
       }
-
+<Footer/>
     </>
   )
 }

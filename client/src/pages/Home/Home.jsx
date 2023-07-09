@@ -1,15 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react'
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import Dropdown from 'react-bootstrap/Dropdown';
 import Tables from '../../components/Tables/Tables';
 import Spiner from "../../components/Spinner/Spinner"
 import { useNavigate } from "react-router-dom"
 import { addData , dltdata, updateData} from '../../components/context/ContextProvider';
-import {usergetfunc,deletfunc,exporttocsvfunc} from "../../services/Apis";
+import {usergetfunc,deletfunc} from "../../services/Apis";
 import Alert from 'react-bootstrap/Alert';
 import "./home.css"
 import { toast } from 'react-toastify';
+import Footer from '../../components/Footer/footer';
 
 
 const Home = () => {
@@ -111,7 +111,7 @@ const Home = () => {
               </Form>
             </div>
             <div className="add_btn">
-              <Button variant="primary" onClick={adduser}> <i class="fa-solid fa-plus"></i>&nbsp; Add User</Button>
+              <Button variant="primary" onClick={adduser}> <i class="fa-solid fa-plus"></i>&nbsp; Add Rider</Button>
             </div>
           </div>
 
@@ -120,8 +120,8 @@ const Home = () => {
             {/* filter by status */}
             <div className="filter_status">
               <div className="status">
-                <h3>Filter By Status</h3>
-                <div className="status_radio d-flex justify-content-between flex-wrap">
+                <h3 style={{color:"white"}}>Filter Riders By Status</h3>
+                <div className="status_radio d-flex justify-content-between flex-wrap" style={{color:"white",fontSize:"18px"}}>
                   <Form.Check
                     type={"radio"}
                     label={`All`}
@@ -163,6 +163,7 @@ const Home = () => {
         }
 
       </div>
+      <Footer/>
     </>
   )
 }

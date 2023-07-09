@@ -44,7 +44,9 @@ exports.userget = async (req, res) => {
 
 
     const query = {
-        fname: { $regex: search, $options: "i" }
+        fname : { $regex: search, $options: "i" },
+        email: { $regex: search, $options: "i" }
+
     }
 
     
