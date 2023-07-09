@@ -1,26 +1,26 @@
-import React,{useState,useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import Card from "react-bootstrap/Card"
 import Row from 'react-bootstrap/esm/Row'
 import { useParams } from 'react-router-dom'
 import Spiner from "../../components/Spinner/Spinner"
-import {singleUsergetfunc} from "../../services/Apis"
+import { singleUsergetfunc } from "../../services/Apis"
 import { BASE_URL } from '../../services/helper'
 import moment from "moment"
 import "./profile.css"
 
 const Profile = () => {
 
-  const [userprofile,setUserProfile] = useState({});
+  const [userprofile, setUserProfile] = useState({});
   const [showspin, setShowSpin] = useState(true);
 
-  const {id} = useParams();
+  const { id } = useParams();
 
-  const userProfileGet = async()=>{
+  const userProfileGet = async () => {
     const response = await singleUsergetfunc(id);
-    
-    if(response.status === 200){
+
+    if (response.status === 200) {
       setUserProfile(response.data)
-    }else{
+    } else {
       console.log("error");
     }
   }
@@ -48,9 +48,8 @@ const Profile = () => {
               <div className='text-center'>
                 <h3>{userprofile.fname + userprofile.lname}</h3>
                 <h4><i class="fa-solid fa-envelope email"></i>&nbsp;:- <span>{userprofile.email}</span> </h4>
-                <h5><i class="fa-solid fa-mobile"></i>&nbsp;:- <span>{userprofile.mobile}</span> </h5>
-                <h4><i class="fa-solid fa-person"></i>&nbsp;:- <span>{userprofile.gender}</span> </h4>
-                <h4><i class="fa-solid fa-location-pin location"></i>&nbsp;:- <span>{userprofile.location}</span> </h4>
+                <h5><i class="fa-solid fa-mobile"></i>&nbsp;:- <span>{userprofile.nric}</span> </h5>
+                <h4><i class="fa-solid fa-location-pin location"></i>&nbsp;:- <span>{userprofile.position}</span> </h4>
                 <h4>Status&nbsp;:- <span>{userprofile.status}</span> </h4>
                 <h5><i class="fa-solid fa-calendar-days calendar"></i>&nbsp;Date Created&nbsp;:- <span>{moment(userprofile.datecreated).format("DD-MM-YYYY")}</span> </h5>
                 <h5> <i class="fa-solid fa-calendar-days calendar"></i>&nbsp;Date Updated&nbsp;:- <span>{userprofile.dateUpdated}</span> </h5>

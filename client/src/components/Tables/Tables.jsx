@@ -34,9 +34,10 @@ const Tables = ({ userdata, deleteUser, userGet, handlePrevious, handleNext, pag
                 <thead className='thead-dark'>
                   <tr className='table-dark'>
                     <th>ID</th>
-                    <th>FullName</th>
+                    <th>Rider Name</th>
                     <th>Email</th>
-                    <th>Gender</th>
+                    <th>Position</th>
+                    <th>NRIC</th>
                     <th>&nbsp;&nbsp;&nbsp;Status</th>
                     <th>Profile</th>
                     <th>Action</th>
@@ -48,14 +49,16 @@ const Tables = ({ userdata, deleteUser, userGet, handlePrevious, handleNext, pag
                       return (
                         <>
                           <tr>
-                            <td>{index + 1 + (page - 1)*4}</td> 
+                            <td>{index + 1 + (page - 1) * 4}</td>
                             <td>{element.fname + element.lname}</td>
                             <td>{element.email}</td>
-                            <td>{element.gender == "Male" ? "M" : "F"}</td>
+                            <td>{element.position}</td>
+                            <td>{element.nric}</td>
+
                             <td className='d-flex align-items-center'>
                               <Dropdown className='text-center'>
                                 <Dropdown.Toggle className='dropdown_btn' id="dropdown-basic">
-                                  <Badge bg={element.status == "Active" ? "primary" : "danger"}>
+                                  <Badge bg={element.status === "Active" ? "primary" : "danger"}>
                                     {element.status} <i class="fa-solid fa-angle-down"></i>
                                   </Badge>
                                 </Dropdown.Toggle>
@@ -95,7 +98,7 @@ const Tables = ({ userdata, deleteUser, userGet, handlePrevious, handleNext, pag
                           </tr>
                         </>
                       )
-                    }) : <div className='no_data text-center'>NO Data Found</div>
+                    }) : <div className='no_data text-center'>NO Riders Found</div>
                   }
 
 

@@ -1,15 +1,13 @@
 const users = require("../models/userSchema");
 const moment = require("moment");
-const csv = require("fast-csv");
-const fs = require("fs");
-const BASE_URL = process.env.BASE_URL
 
-// register user
+
+// register user details
 exports.userpost = async (req, res) => {
     const file = req.file.filename;
-    const { fname, lname, email, mobile, gender, location, status } = req.body;
+    const { fname, lname, email, nric, position, status } = req.body;
 
-    if (!fname || !lname || !email || !mobile || !gender || !location || !status || !file) {
+    if (!fname || !lname || !email || !nric || !position || !status || !file) {
         res.status(401).json("All Inputs is required")
     }
 
@@ -17,31 +15,30 @@ exports.userpost = async (req, res) => {
         const preuser = await users.findOne({ email: email });
 
         if (preuser) {
-            res.status(401).json("This user already exist in our databse")
+            res.status(401).json("This user already exist in our database")
         } else {
 
             const datecreated = moment(new Date()).format("YYYY-MM-DD hh:mm:ss");
 
             const userData = new users({
-                fname, lname, email, mobile, gender, location, status, profile: file, datecreated
+                fname, lname, email, nric, position, status, profile: file, datecreated
             });
             await userData.save();
             res.status(200).json(userData);
         }
     } catch (error) {
-        console.log(error); // Add this line to log the error message
         res.status(401).json(error);
+        console.log("Catch Block Error");
+
     }
 };
 
 
-// usersget
+// get all users 
 exports.userget = async (req, res) => {
 
     const search = req.query.search || ""
-    const gender = req.query.gender || ""
     const status = req.query.status || ""
-    const sort = req.query.sort || ""
     const page = req.query.page || 1
     const ITEM_PER_PAGE = 4;
 
@@ -50,9 +47,7 @@ exports.userget = async (req, res) => {
         fname: { $regex: search, $options: "i" }
     }
 
-    if (gender !== "All") {
-        query.gender = gender
-    }
+    
 
     if (status !== "All") {
         query.status = status
@@ -65,15 +60,14 @@ exports.userget = async (req, res) => {
         const count = await users.countDocuments(query);
 
         const usersdata = await users.find(query)
-            .sort({ datecreated: sort == "new" ? -1 : 1 })
             .limit(ITEM_PER_PAGE)
             .skip(skip);
 
-        const pageCount = Math.ceil(count/ITEM_PER_PAGE);  // 8 /4 = 2
+        const pageCount = Math.ceil(count / ITEM_PER_PAGE);  // 8 /4 = 2
 
         res.status(200).json({
-            Pagination:{
-                count,pageCount
+            Pagination: {
+                count, pageCount
             },
             usersdata
         })
@@ -82,7 +76,7 @@ exports.userget = async (req, res) => {
     }
 }
 
-// single user get
+// get a single user details
 exports.singleuserget = async (req, res) => {
 
     const { id } = req.params;
@@ -95,17 +89,17 @@ exports.singleuserget = async (req, res) => {
     }
 }
 
-// user edit
+// user update details
 exports.useredit = async (req, res) => {
     const { id } = req.params;
-    const { fname, lname, email, mobile, gender, location, status, user_profile } = req.body;
+    const { fname, lname, email, nric, position, status, user_profile } = req.body;
     const file = req.file ? req.file.filename : user_profile
 
     const dateUpdated = moment(new Date()).format("YYYY-MM-DD hh:mm:ss");
 
     try {
         const updateuser = await users.findByIdAndUpdate({ _id: id }, {
-            fname, lname, email, mobile, gender, location, status, profile: file, dateUpdated
+            fname, lname, email, nric, position, status, profile: file, dateUpdated
         }, {
             new: true
         });
@@ -117,7 +111,7 @@ exports.useredit = async (req, res) => {
     }
 }
 
-// delete user
+// delete user details
 exports.userdelete = async (req, res) => {
     const { id } = req.params;
     try {
@@ -128,7 +122,7 @@ exports.userdelete = async (req, res) => {
     }
 }
 
-// chnage status
+// change status for users
 exports.userstatus = async (req, res) => {
     const { id } = req.params;
     const { data } = req.body;
@@ -141,53 +135,3 @@ exports.userstatus = async (req, res) => {
     }
 }
 
-// export user
-exports.userExport = async (req, res) => {
-    try {
-        const usersdata = await users.find();
-
-        const csvStream = csv.format({ headers: true });
-
-        if (!fs.existsSync("public/files/export/")) {
-            if (!fs.existsSync("public/files")) {
-                fs.mkdirSync("public/files/");
-            }
-            if (!fs.existsSync("public/files/export")) {
-                fs.mkdirSync("./public/files/export/");
-            }
-        }
-
-        const writablestream = fs.createWriteStream(
-            "public/files/export/users.csv"
-        );
-
-        csvStream.pipe(writablestream);
-
-        writablestream.on("finish", function () {
-            res.json({
-                downloadUrl: `${BASE_URL}/files/export/users.csv`,
-            });
-        });
-        if (usersdata.length > 0) {
-            usersdata.map((user) => {
-                csvStream.write({
-                    FirstName: user.fname ? user.fname : "-",
-                    LastName: user.lname ? user.lname : "-",
-                    Email: user.email ? user.email : "-",
-                    Phone: user.mobile ? user.mobile : "-",
-                    Gender: user.gender ? user.gender : "-",
-                    Status: user.status ? user.status : "-",
-                    Profile: user.profile ? user.profile : "-",
-                    Location: user.location ? user.location : "-",
-                    DateCreated: user.datecreated ? user.datecreated : "-",
-                    DateUpdated: user.dateUpdated ? user.dateUpdated : "-",
-                })
-            })
-        }
-        csvStream.end();
-        writablestream.end();
-
-    } catch (error) {
-        res.status(401).json(error)
-    }
-}

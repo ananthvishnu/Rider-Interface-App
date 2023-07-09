@@ -22,17 +22,17 @@ const usersSchema = new mongoose.Schema({
             }
         }
     },
-    mobile: {
+    nric: {
         type: String,
         required: true,
-        unique: true,
-        minlength: 10,
-        maxlength: 10
+        // unique: true,
+        // minlength: 10,
+        // maxlength: 10
     },
-    gender: {
-        type: String,
-        required: true,
-    },
+    // gender: {
+    //     type: String,
+    //     required: true,
+    // },
     status: {
         type: String,
         required: true,
@@ -41,7 +41,7 @@ const usersSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    location: {
+    position: {
         type: String,
         required: true,
     },
