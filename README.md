@@ -46,7 +46,7 @@ react-toastify
 # Installation & Run the App
 
 ## Clone the Repository
-git clone https://github.com/your-username/your-repo.git
+git clone https://github.com/ananthvishnu/Rider-Interface-App
 
 ## Change to the Project Directory
 cd your-repo
