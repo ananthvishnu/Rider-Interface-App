@@ -60,6 +60,9 @@ Create a .env file in the root directory of the project. Inside the .env file, p
 ## Start the Application
 npm start
 
+##
+See the App
+https://64aa81237ed34f0f0d2eb123--symphonious-gumption-6b0f10.netlify.app/
 
 
 
